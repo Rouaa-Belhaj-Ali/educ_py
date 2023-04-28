@@ -1,0 +1,69 @@
+import pygame
+import random
+
+# Initialize Pygame
+pygame.init()
+
+# Set the screen size
+SCREEN_WIDTH = 1600
+SCREEN_HEIGHT = 1280
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Load the background image
+background = pygame.image.load('images/Cap.PNG').convert()
+
+# Load the running alien image
+alien_running = pygame.image.load('images/lili.PNG').convert_alpha()
+
+# Load the smashed alien image
+alien_smashed = pygame.image.load('images/Ca.PNG').convert_alpha()
+
+# Set the initial position and speed of the alien
+lili_x = random.randint(0, SCREEN_WIDTH - alien_running.get_width())
+lili_y = 0
+lili_speed = 5
+
+# Initialize the score
+score = 0
+
+# Set the font for the score display
+font = pygame.font.Font(None, 36)
+
+# Start the game loop
+running = True
+while running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Check if the player clicked on the alien
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            alien_rect = pygame.Rect(alien_x, alien_y, alien_running.get_width(), alien_running.get_height())
+            if alien_rect.collidepoint(mouse_x, mouse_y):
+                alien = alien_smashed
+                score += 1
+
+    # Move the alien down the screen
+    lili_y += lili_speed
+
+    # Check if the alien has reached the bottom of the screen
+    if lili_y > SCREEN_HEIGHT:
+        # Reset the position of the alien and increase the score
+        lili_x = random.randint(0, SCREEN_WIDTH - alien_running.get_width())
+        lili_y = 0
+        score += 1
+
+    # Draw the background and the alien on the screen
+    screen.blit(background, (0, 0))
+    screen.blit(alien, (alien_x, alien_y))
+
+    # Draw the score on the screen
+    score_text = font.render('Score: ' + str(score), True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
+
+    # Update the display
+    pygame.display.update()
+
+# Quit Pygame
+pygame.quit()
